@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: work-flow-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:keys/public-key.pem
+jwt:
+  publicKey: classpath:keys/public-key.pem
+  privateKey: classpath:keys/private-key.pem
+  issuer: Jaaja
+  tokenExpirationMs: 86400000
+  refreshTokenExpirationMs: 604800000
