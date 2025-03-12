@@ -11,4 +11,3 @@ jwt:
   privateKey: classpath:keys/private-key.pem
   issuer: Jaaja
   tokenExpirationMs: 86400000
-  refreshTokenExpirationMs: 604800000
