@@ -1,13 +1,23 @@
 spring:
+  config:
+    import: file:.env[.properties]
   application:
     name: work-flow-service
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          public-key-location: classpath:keys/public-key.pem
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/workflow_db
+    username: postgres
+    password: secret
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
 jwt:
-  publicKey: classpath:keys/public-key.pem
-  privateKey: classpath:keys/private-key.pem
+  publicKey: ${PUBLIC_KEY}
+  privateKey: ${PRIVATE_KEY}
   issuer: Jaaja
-  tokenExpirationMs: 86400000
+  tokenExpirationMs: 864000000
+  secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970

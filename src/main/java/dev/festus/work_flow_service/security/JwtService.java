@@ -2,15 +2,14 @@ package dev.festus.work_flow_service.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
+import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
@@ -21,33 +20,28 @@ import java.util.logging.Logger;
 public class JwtService {
 
     private static final Logger logger = Logger.getLogger(JwtService.class.getName());
-    private final PublicKey publicKey;
-    private final PrivateKey privateKey;
+
     private final JwtProperties jwtProperties;
+    private final SecretKey key;
 
     public JwtService(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
-        this.publicKey = loadKey(jwtProperties.getPublicKey(), KeyType.PUBLIC);
-        this.privateKey = loadKey(jwtProperties.getPrivateKey(), KeyType.PRIVATE);
+        this.key = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes());
     }
 
-    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims, long expiration) {
-        Instant now = Instant.now();
+    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("roles", userDetails.getAuthorities())
-                .claim("tokenVersion", now.toEpochMilli())
+                .claim("tokenVersion", new Date().getTime())
                 .claims(extraClaims)
-                .signWith(privateKey, Jwts.SIG.RS256)
-                .issuedAt(Date.from(now))
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getTokenExpirationMs()))
                 .issuer(jwtProperties.getIssuer())
                 .compact();
     }
 
-    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims) {
-        return generateToken(userDetails, extraClaims, jwtProperties.getTokenExpirationMs());
-    }
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(userDetails, Map.of());
@@ -76,29 +70,11 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-            return Jwts.parser()
-                    .setSigningKey(publicKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
+        return Jwts.parser()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
 
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T loadKey(String filePath, KeyType keyType) {
-        try {
-            byte[] keyBytes = Files.readAllBytes(Paths.get(filePath));
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            return keyType == KeyType.PUBLIC
-                    ? (T) keyFactory.generatePublic(spec)
-                    : (T) keyFactory.generatePrivate(spec);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to load key from file: " + filePath, e);
-        }
-    }
-
-    private enum KeyType {
-        PUBLIC, PRIVATE
     }
 }
