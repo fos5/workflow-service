@@ -4,20 +4,20 @@ spring:
   application:
     name: work-flow-service
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/workflow_db
-    username: postgres
-    password: secret
+    driver-class-name: ${DB_DRIVER}
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_SECRET}
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: ${DB_DIALECT}
 
 jwt:
   publicKey: ${PUBLIC_KEY}
   privateKey: ${PRIVATE_KEY}
   issuer: Jaaja
-  tokenExpirationMs: 864000000
-  secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  tokenExpirationMs: ${TOKEN_EXP}
+  secret-key: ${SECRET_KEY}
