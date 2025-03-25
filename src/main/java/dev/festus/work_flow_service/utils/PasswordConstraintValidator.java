@@ -2,7 +2,15 @@ package dev.festus.work_flow_service.utils;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.passay.*;
+import org.passay.CharacterRule;
+import org.passay.EnglishCharacterData;
+import org.passay.EnglishSequenceData;
+import org.passay.IllegalSequenceRule;
+import org.passay.LengthRule;
+import org.passay.PasswordData;
+import org.passay.PasswordValidator;
+import org.passay.RuleResult;
+
 
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
