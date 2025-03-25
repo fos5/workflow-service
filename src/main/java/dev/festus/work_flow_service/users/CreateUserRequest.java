@@ -1,6 +1,5 @@
-package dev.festus.work_flow_service.auth;
+package dev.festus.work_flow_service.users;
 
-import dev.festus.work_flow_service.users.Role;
 import dev.festus.work_flow_service.utils.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 
 @Builder
-public record RegistrationRequest(
+public record CreateUserRequest(
         @NotBlank(message = "First name cannot be null / empty")
         @Pattern(
                 regexp = "^[a-zA-Z\\s]+$",

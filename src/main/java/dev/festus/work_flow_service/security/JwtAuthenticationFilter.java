@@ -19,7 +19,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j  // Enables logging
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;

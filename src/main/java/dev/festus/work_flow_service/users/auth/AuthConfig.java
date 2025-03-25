@@ -1,4 +1,4 @@
-package dev.festus.work_flow_service.auth;
+package dev.festus.work_flow_service.users.auth;
 
 import dev.festus.work_flow_service.users.UserRepository;
 import org.springframework.context.annotation.Bean;

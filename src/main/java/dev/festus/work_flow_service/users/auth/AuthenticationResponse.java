@@ -1,4 +1,4 @@
-package dev.festus.work_flow_service.auth;
+package dev.festus.work_flow_service.users.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
