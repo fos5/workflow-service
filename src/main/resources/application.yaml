@@ -10,10 +10,7 @@ spring:
     password: ${DB_SECRET}
   jpa:
     hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: ${DB_DIALECT}
+      ddl-auto: none
 
 jwt:
   publicKey: ${PUBLIC_KEY}
@@ -21,3 +18,8 @@ jwt:
   issuer: Jaaja
   tokenExpirationMs: ${TOKEN_EXP}
   secret-key: ${SECRET_KEY}
+logging:
+  level:
+    org:
+      springframework:
+        security=DEBUG:
